@@ -1,28 +1,21 @@
 class Solution {
-
-    private Integer prev = null;
-
-    public boolean isValidBST(TreeNode root) {
-        return inOrderTraversal(root);
+    public TreeNode createTree(int []preorder,HashMap<Integer,Integer> ans,int idx,int left,int right){
+        TreeNode root = new TreeNode(preorder[idx]);
+        int mid = ans.get(preorder[idx]);
+        if(left<mid){
+            root.left = createTree(preorder,ans,idx+1,left,mid-1);
+        }
+        if(right>mid){
+            root.right = createTree(preorder,ans,idx+mid-left+1,mid+1,right);
+        }
+        return root;
     }
-
-    private boolean inOrderTraversal(TreeNode node) {
-        if (node == null) {
-            return true;
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        HashMap<Integer,Integer> map = new HashMap<>();
+        for(int i=0;i<inorder.length;i++){
+            map.put(inorder[i],i);
         }
+        return createTree(preorder,map,0,0,inorder.length-1);
 
-        // Check the left subtree
-        if (!inOrderTraversal(node.left)) {
-            return false;
-        }
-
-        // Check current node value with the previous node value
-        if (prev != null && node.val <= prev) {
-            return false;
-        }
-        prev = node.val;
-
-        // Check the right subtree
-        return inOrderTraversal(node.right);
     }
 }
